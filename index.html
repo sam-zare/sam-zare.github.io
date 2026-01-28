@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amir Zare, MD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a4d2e;
+            --primary-light: #2d6a4f;
+            --text-dark: #1e293b;
+            --text-medium: #475569;
+            --text-light: #64748b;
+            --background: #fafaf9;
+            --surface: #ffffff;
+            --border: #e7e5e4;
+            --accent: #0f766e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background: var(--background);
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        nav {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            padding: 80px 0;
+        }
+
+        .hero {
+            margin-bottom: 80px;
+        }
+
+        h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 48px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .subtitle {
+            font-size: 20px;
+            color: var(--text-medium);
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .bio {
+            font-size: 17px;
+            color: var(--text-medium);
+            line-height: 1.7;
+            max-width: 680px;
+            margin-bottom: 32px;
+        }
+
+        .links {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .link-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            background: var(--surface);
+            color: var(--text-dark);
+            text-decoration: none;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .link-button:hover {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        section {
+            margin-bottom: 80px;
+        }
+
+        h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 32px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 32px;
+            letter-spacing: -0.01em;
+        }
+
+        .interests {
+            display: grid;
+            gap: 16px;
+        }
+
+        .interest-item {
+            background: var(--surface);
+            padding: 20px 24px;
+            border-left: 3px solid var(--primary);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .interest-item h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .interest-item p {
+            color: var(--text-medium);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .posts-grid {
+            display: grid;
+            gap: 24px;
+        }
+
+        .post-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 28px;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .post-card:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .post-tag {
+            background: var(--background);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .post-card h3 {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .post-card p {
+            color: var(--text-medium);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 120px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+
+            main {
+                padding: 48px 0;
+            }
+
+            .hero {
+                margin-bottom: 56px;
+            }
+
+            section {
+                margin-bottom: 56px;
+            }
+        }
+
+        /* Subtle animation on page load */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero, section {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        section:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        section:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">Amir Zare</a>
+            <ul class="nav-links">
+                <li><a href="#research">Research</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#cv">CV</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="hero">
+            <h1>Amir Zare, MD</h1>
+            <p class="subtitle">Medical AI & Biostatistics</p>
+            <p class="bio">
+                I work on clinical AI and biostatistical methods for oncology and neuroimaging data. 
+                My research focuses on developing interpretable machine learning approaches for survival 
+                prediction and treatment response modeling in neuro-oncology, with particular emphasis 
+                on radiomics and multi-center MRI data integration.
+            </p>
+            <div class="links">
+                <a href="https://github.com/yourusername" class="link-button">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                    </svg>
+                    GitHub
+                </a>
+                <a href="https://scholar.google.com/citations?user=YOURPROFILE" class="link-button">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 0C3.58 0 0 3.58 0 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm0 14.5c-3.59 0-6.5-2.91-6.5-6.5S4.41 1.5 8 1.5s6.5 2.91 6.5 6.5-2.91 6.5-6.5 6.5z"/>
+                        <path d="M8 4C5.79 4 4 5.79 4 8s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4zm0 6c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/>
+                    </svg>
+                    Google Scholar
+                </a>
+                <a href="mailto:your.email@institution.edu" class="link-button">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4Zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1H2Zm13 2.383-4.708 2.825L15 11.105V5.383Zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741ZM1 11.105l4.708-2.897L1 5.383v5.722Z"/>
+                    </svg>
+                    Email
+                </a>
+                <a href="/cv.pdf" class="link-button">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
+                        <path d="M9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.5L9.5 0zm0 1v2A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5z"/>
+                    </svg>
+                    Download CV
+                </a>
+            </div>
+        </div>
+
+        <section id="research">
+            <h2>Research Interests</h2>
+            <div class="interests">
+                <div class="interest-item">
+                    <h3>Clinical Prediction Models</h3>
+                    <p>Survival analysis and prognostic modeling for cancer patients using radiomics, genomics, and clinical data. Focus on handling competing risks and time-varying covariates in real-world oncology settings.</p>
+                </div>
+                <div class="interest-item">
+                    <h3>Medical Image Analysis</h3>
+                    <p>Radiomics pipelines for glioma characterization and treatment response prediction. Development of batch correction methods for multi-center neuroimaging studies.</p>
+                </div>
+                <div class="interest-item">
+                    <h3>Statistical Methods</h3>
+                    <p>Sparse regression techniques, penalized survival models, and methods for high-dimensional biomedical data. Particular interest in handling missing data and measurement error in clinical datasets.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="blog">
+            <h2>Recent Writing</h2>
+            <div class="posts-grid">
+                <a href="/blog/firth-regression" class="post-card">
+                    <div class="post-meta">
+                        <span class="post-tag">Methods</span>
+                        <span>Jan 2026</span>
+                    </div>
+                    <h3>When (and when not) to use Firth logistic regression</h3>
+                    <p>Exploring separation issues in clinical trial data and how Firth's penalized likelihood prevents inflated effect estimates in small samples. Includes simulations comparing standard and penalized approaches.</p>
+                </a>
+
+                <a href="/blog/tumor-purity" class="post-card">
+                    <div class="post-meta">
+                        <span class="post-tag">Genomics</span>
+                        <span>Dec 2025</span>
+                    </div>
+                    <h3>What tumor purity does to your differential expression results</h3>
+                    <p>A practical look at how sample contamination affects RNA-seq analysis in TCGA data, with code for adjusting differential expression models.</p>
+                </a>
+
+                <a href="/blog/batch-correction" class="post-card">
+                    <div class="post-meta">
+                        <span class="post-tag">Imaging</span>
+                        <span>Nov 2025</span>
+                    </div>
+                    <h3>How batch correction changes PCA in multi-center MRI studies</h3>
+                    <p>Comparing ComBat, harmonization, and mixed-effects approaches for integrating radiomics features across scanning protocols. Before/after visualizations with real neuro-oncology data.</p>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2026 Amir Zare. Built with GitHub Pages.</p>
+                <div class="footer-links">
+                    <a href="https://orcid.org/YOUR-ORCID">ORCID</a>
+                    <a href="https://twitter.com/yourusername">Twitter</a>
+                    <a href="https://linkedin.com/in/yourprofile">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
