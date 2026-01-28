@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uncertainty-Aware Generative Oversampling: LEO-CVAE | AmirHessam Zare</title>
+    <meta name="description" content="Introducing LEO-CVAE: a novel approach combining local entropy guidance with conditional variational autoencoders to address class imbalance in clinical genomics through uncertainty-aware generative modeling.">
+    <meta name="keywords" content="class imbalance, CVAE, generative modeling, uncertainty, genomics, clinical ML, deep learning">
+    <meta name="author" content="AmirHessam Zare">
+    
+    <!-- Open Graph / Social Media Tags -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sam-zare.github.io/blog/leo-cvae">
+    <meta property="og:title" content="Uncertainty-Aware Generative Oversampling: LEO-CVAE">
+    <meta property="og:description" content="Introducing LEO-CVAE: uncertainty-aware generative oversampling for imbalanced clinical genomics data.">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sam-zare.github.io/blog/leo-cvae">
+    
+    <!-- JSON-LD Structured Data for Article -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Uncertainty-Aware Generative Oversampling: Introducing LEO-CVAE",
+        "description": "Local Entropy-Guided Oversampling with Conditional Variational Autoencoders for class imbalance in clinical genomics",
+        "datePublished": "2025-12-15",
+        "author": {
+            "@type": "Person",
+            "name": "AmirHessam Zare"
+        }
+    }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #1a4d2e;
+            --primary-light: #2d6a4f;
+            --text-dark: #1e293b;
+            --text-medium: #475569;
+            --text-light: #64748b;
+            --background: #fafaf9;
+            --surface: #ffffff;
+            --border: #e7e5e4;
+            --accent: #0f766e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+            background: var(--background);
+            color: var(--text-dark);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        nav {
+            padding: 20px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Crimson Pro', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            text-decoration: none;
+            letter-spacing: -0.01em;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 400;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        main {
+            padding: 80px 0;
+        }
+
+        article {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 48px;
+        }
+
+        .article-header {
+            margin-bottom: 40px;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        .article-tag {
+            background: var(--background);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        article h1 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 42px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        article h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        article h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-top: 24px;
+            margin-bottom: 12px;
+        }
+
+        article p {
+            margin-bottom: 16px;
+            color: var(--text-medium);
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        article ul,
+        article ol {
+            margin-bottom: 20px;
+            margin-left: 20px;
+            color: var(--text-medium);
+        }
+
+        article li {
+            margin-bottom: 8px;
+            line-height: 1.8;
+        }
+
+        article a {
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(26, 77, 46, 0.2);
+            transition: all 0.2s;
+        }
+
+        article a:hover {
+            border-bottom-color: var(--primary);
+            background: rgba(26, 77, 46, 0.05);
+        }
+
+        .links-section {
+            background: var(--background);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 8px;
+            margin-top: 40px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .links-section h3 {
+            margin-top: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 12px;
+        }
+
+        .links-section p {
+            margin-bottom: 8px;
+            color: var(--text-medium);
+            font-size: 15px;
+            line-height: 1.6;
+        }
+
+        .links-section a {
+            display: inline;
+            color: var(--primary);
+            text-decoration: none;
+            border-bottom: 1px solid rgba(26, 77, 46, 0.2);
+            transition: all 0.2s;
+        }
+
+        .links-section a:hover {
+            border-bottom-color: var(--primary);
+            background: rgba(26, 77, 46, 0.05);
+        }
+
+        .citation {
+            background: var(--surface);
+            border-left: 3px solid var(--accent);
+            padding: 16px 20px;
+            margin: 16px 0;
+            border-radius: 0 4px 4px 0;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text-medium);
+        }
+
+        .citation strong {
+            color: var(--text-dark);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+            text-decoration: none;
+            margin-bottom: 40px;
+            font-size: 15px;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            gap: 12px;
+        }
+
+        footer {
+            background: var(--surface);
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-text {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-medium);
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 768px) {
+            article h1 {
+                font-size: 32px;
+            }
+
+            article h2 {
+                font-size: 24px;
+            }
+
+            article {
+                padding: 28px;
+            }
+
+            main {
+                padding: 48px 0;
+            }
+
+            .nav-links {
+                gap: 20px;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        article {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="/" class="logo">AmirHessam Zare</a>
+            <ul class="nav-links">
+                <li><a href="/#research">Research</a></li>
+                <li><a href="/#blog">Blog</a></li>
+                <li><a href="/#cv">CV</a></li>
+                <li><a href="/#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <a href="/" class="back-link">
+            <span>←</span>
+            <span>Back to home</span>
+        </a>
+
+        <article>
+            <div class="article-header">
+                <div class="article-meta">
+                    <span class="article-tag">Methods</span>
+                    <span>December 2025</span>
+                </div>
+                <h1>Uncertainty-Aware Generative Oversampling: Introducing LEO-CVAE</h1>
+                <p style="margin-top: 12px; color: var(--text-light); font-style: italic;">
+                    Published on arXiv | arXiv:2509.25334v3
+                </p>
+            </div>
+
+            <p>
+                I'm pleased to share my latest research on addressing class imbalance in clinical genomics through 
+                uncertainty-aware generative modeling. Our paper introduces <strong>LEO-CVAE</strong> (Local Entropy-Guided 
+                Oversampling with a Conditional Variational Autoencoder), bridging information theory and deep learning 
+                to tackle a fundamental challenge in biomedical machine learning.
+            </p>
+
+            <h2>The Problem</h2>
+            <p>
+                Class imbalance is pervasive in clinical datasets, where minority classes—patients with rare conditions 
+                or adverse outcomes—are often the most critical to identify. In clinical genomics, this challenge is 
+                amplified by two characteristics: high-dimensional, nonlinear data manifolds and ambiguous, overlapping 
+                class boundaries due to biological heterogeneity.
+            </p>
+            <p>
+                Traditional oversampling methods like SMOTE rely on linear interpolation, which breaks down in complex 
+                genomic feature spaces, generating biologically implausible synthetic samples. While deep generative 
+                models like CVAEs can capture nonlinear distributions, they treat all minority samples equally, missing 
+                a crucial insight: samples near class boundaries are more valuable for learning than those deep within 
+                a class's feature space.
+            </p>
+
+            <h2>The Solution</h2>
+            <p>
+                LEO-CVAE addresses this gap through three innovations:
+            </p>
+            <ul>
+                <li>
+                    <strong>Local Entropy Score (LES)</strong>: We quantify sample-level uncertainty using Shannon entropy 
+                    over each sample's k-nearest neighborhood, formally identifying "hard-to-learn" regions where classes overlap.
+                </li>
+                <li>
+                    <strong>Local Entropy-Weighted Loss (LEWL)</strong>: We modify the CVAE training objective to prioritize 
+                    learning in high-entropy regions, compelling the model to focus on contested decision boundaries.
+                </li>
+                <li>
+                    <strong>Entropy-Guided Sampling</strong>: During generation, we preferentially select high-entropy 
+                    samples as seeds, concentrating synthetic data creation in the most informative regions.
+                </li>
+            </ul>
+
+            <h2>Results</h2>
+            <p>
+                Evaluated on TCGA lung cancer (binary classification, 817 patients) and ADNI Alzheimer's (multiclass 
+                classification, 744 participants), LEO-CVAE consistently outperformed both traditional methods (SMOTE, 
+                Borderline-SMOTE, ADASYN) and generative baselines (Standard CVAE, CVAE with Focal Loss).
+            </p>
+            <ul>
+                <li>On TCGA: achieved the highest AUC-ROC (0.661 ± 0.030) and AUPRC (0.889 ± 0.021)</li>
+                <li>On ADNI: obtained the highest macro-averaged metrics, demonstrating balanced performance across all classes</li>
+            </ul>
+
+            <h2>Significance</h2>
+            <p>
+                This work is the first to integrate local entropy as a direct signal guiding both training and generation 
+                in a deep generative model for imbalanced learning. The approach is particularly suited for domains with 
+                complex, nonlinear data structures and ambiguous class boundaries—characteristics common in biomedical 
+                applications.
+            </p>
+
+            <div class="links-section">
+                <h3>Access the Work</h3>
+                <p>
+                    <strong>Read the full paper:</strong> 
+                    <a href="https://arxiv.org/abs/2509.25334" target="_blank" rel="noopener noreferrer">arXiv:2509.25334v3</a>
+                </p>
+                <p>
+                    <strong>Access the code:</strong> 
+                    <a href="https://github.com/Amirhossein-Zare/LEO-CVAE" target="_blank" rel="noopener noreferrer">
+                        github.com/Amirhossein-Zare/LEO-CVAE
+                    </a>
+                </p>
+                <div class="citation">
+                    <strong>Citation:</strong><br>
+                    Zare, A., Zare, A., Pezeshki, P.S., Rahimi, H., Ebrahimi, A., Vazquez-García, I., &amp; Celi, L.A. 
+                    (2025). Uncertainty-Aware Generative Oversampling Using an Entropy-Guided Conditional Variational 
+                    Autoencoder. <em>arXiv preprint arXiv:2509.25334v3</em>.
+                </div>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">© 2026 AmirHessam Zare. Built with GitHub Pages.</p>
+                <div class="footer-links">
+                    <a href="https://orcid.org/0009-0008-1654-6741">ORCID</a>
+                    <a href="https://twitter.com/yourusername">Twitter</a>
+                    <a href="https://www.linkedin.com/in/amirhesam-zare">LinkedIn</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
